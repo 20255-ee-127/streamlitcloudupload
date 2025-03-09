@@ -24,7 +24,7 @@ def commit_and_push_image(image_path):
         # Ensure the local repo exists
         if not os.path.exists(LOCAL_REPO_PATH):
             print("Cloning repository...")
-            git.Repo.clone_from(f"https://{GITHUB_USERNAME}:{GITHUB_TOKEN}@{GITHUB_REPO}", LOCAL_REPO_PATH)
+            git.Repo.clone_from(f"https://{GITHUB_USERNAME}:{GITHUB_TOKEN}@github.com/whiteandbox/codebase.git", LOCAL_REPO_PATH)
 
         repo = git.Repo(LOCAL_REPO_PATH)
 
