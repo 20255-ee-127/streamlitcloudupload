@@ -12,8 +12,8 @@ except KeyError as e:
     st.error(f"Missing secret: {e}")
     st.stop()
 
-GITHUB_REPO = "https://github.com/whiteandbox/codebase.git"  # Your repo HTTPS URL
-LOCAL_REPO_PATH = "codebase"  # Path to the local cloned repo
+GITHUB_REPO = "https://github.com/whiteandbox/cdn.git"  # Your new repo HTTPS URL
+LOCAL_REPO_PATH = "cdn"  # Path to the local cloned repo
 TARGET_FOLDER = "testautomated"  # Folder to place the image in the repo
 BRANCH_NAME = "dummy"  # Branch to push the changes
 
@@ -31,7 +31,7 @@ def clone_repository():
         try:
             print("Cloning repository...")
             git.Repo.clone_from(
-                f"https://{GITHUB_USERNAME}:{GITHUB_TOKEN}@github.com/whiteandbox/codebase.git",
+                f"https://{GITHUB_USERNAME}:{GITHUB_TOKEN}@github.com/whiteandbox/cdn.git",
                 LOCAL_REPO_PATH,
                 config='http.postBuffer=524288000'
             )
@@ -81,7 +81,7 @@ def commit_and_push_image(image_path):
         origin.push(refspec=f"{BRANCH_NAME}:{BRANCH_NAME}")
 
         # Construct raw GitHub file URL
-        github_file_url = f"https://raw.githubusercontent.com/whiteandbox/codebase/refs/heads/{BRANCH_NAME}/{TARGET_FOLDER}/{unique_image_name}"
+        github_file_url = f"https://raw.githubusercontent.com/whiteandbox/cdn/refs/heads/{BRANCH_NAME}/{TARGET_FOLDER}/{unique_image_name}"
         print(f"File uploaded successfully: {github_file_url}")
         return {"status": "success", "url": github_file_url}
 
