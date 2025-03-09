@@ -1,4 +1,3 @@
-# filepath: f:\White And Box\Cloud test automated image upload to github\streamlitcloudupload\app.py
 import os
 import git
 from datetime import datetime
@@ -9,8 +8,8 @@ GITHUB_REPO = "https://github.com/whiteandbox/codebase.git"  # Your repo HTTPS U
 LOCAL_REPO_PATH = "codebase"  # Path to the local cloned repo
 TARGET_FOLDER = "testautomated"  # Folder to place the image in the repo
 BRANCH_NAME = "dummy"  # Branch to push the changes
-GITHUB_USERNAME = st.secrets["github"]["username"]  # Your GitHub username
-GITHUB_TOKEN = st.secrets["github"]["token"]  # Your GitHub personal access token
+GITHUB_USERNAME = "whiteandbox"  # Your GitHub username
+GITHUB_TOKEN = "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"  # Your GitHub personal access token
 
 def get_unique_image_name(base_path, base_name):
     counter = 1
