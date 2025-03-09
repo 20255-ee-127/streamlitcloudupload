@@ -4,8 +4,6 @@ import requests
 from datetime import datetime
 import streamlit as st
 import logging
-from io import BytesIO
-from PIL import Image
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -62,56 +60,27 @@ def upload_image_to_github(image_path, image_name):
 # Streamlit app
 st.title("Image Upload to GitHub")
 
-# Check if the request is coming from an API call
-if st.experimental_get_query_params():
-    query_params = st.experimental_get_query_params()
-    if 'image' in query_params:
-        image_data = query_params['image'][0]
-        image_bytes = base64.b64decode(image_data)
-        image = Image.open(BytesIO(image_bytes))
+uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
-        # Ensure the temp directory exists
-        if not os.path.exists("temp"):
-            os.makedirs("temp")
+if uploaded_file is not None:
+    # Ensure the temp directory exists
+    if not os.path.exists("temp"):
+        os.makedirs("temp")
 
-        # Save the uploaded file temporarily
-        temp_image_path = os.path.join("temp", "uploaded_image.jpg")
-        image.save(temp_image_path)
+    # Save the uploaded file temporarily
+    temp_image_path = os.path.join("temp", uploaded_file.name)
+    with open(temp_image_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
 
-        # Generate unique image name
-        unique_image_name = get_unique_image_name("uploaded_image.jpg")
-        logging.info(f"Generated unique image name: {unique_image_name}")
+    # Generate unique image name
+    unique_image_name = get_unique_image_name(uploaded_file.name)
+    logging.info(f"Generated unique image name: {unique_image_name}")
 
-        # Upload the image to GitHub
-        response = upload_image_to_github(temp_image_path, unique_image_name)
+    # Upload the image to GitHub
+    response = upload_image_to_github(temp_image_path, unique_image_name)
 
-        # Display the response
-        if response["status"] == "success":
-            st.json({"status": "success", "url": response["url"]})
-        else:
-            st.json({"status": "error", "message": response["message"]})
-else:
-    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
-
-    if uploaded_file is not None:
-        # Ensure the temp directory exists
-        if not os.path.exists("temp"):
-            os.makedirs("temp")
-
-        # Save the uploaded file temporarily
-        temp_image_path = os.path.join("temp", uploaded_file.name)
-        with open(temp_image_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
-
-        # Generate unique image name
-        unique_image_name = get_unique_image_name(uploaded_file.name)
-        logging.info(f"Generated unique image name: {unique_image_name}")
-
-        # Upload the image to GitHub
-        response = upload_image_to_github(temp_image_path, unique_image_name)
-
-        # Display the response
-        if response["status"] == "success":
-            st.success(f"File uploaded successfully: [View Image]({response['url']})")
-        else:
-            st.error(f"Error: {response['message']}")
+    # Display the response
+    if response["status"] == "success":
+        st.success(f"File uploaded successfully: [View Image]({response['url']})")
+    else:
+        st.error(f"Error: {response['message']}")
