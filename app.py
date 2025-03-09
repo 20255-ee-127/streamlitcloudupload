@@ -1,20 +1,16 @@
+# filepath: f:\White And Box\Cloud test automated image upload to github\streamlitcloudupload\app.py
 import os
 import git
 from datetime import datetime
 import streamlit as st
 
 # Configuration
-try:
-    GITHUB_USERNAME = st.secrets["github"]["username"]  # Your GitHub username
-    GITHUB_TOKEN = st.secrets["github"]["token"]  # Your GitHub personal access token
-except KeyError as e:
-    st.error(f"Missing secret: {e}")
-    st.stop()
-
 GITHUB_REPO = "https://github.com/whiteandbox/codebase.git"  # Your repo HTTPS URL
 LOCAL_REPO_PATH = "codebase"  # Path to the local cloned repo
 TARGET_FOLDER = "testautomated"  # Folder to place the image in the repo
 BRANCH_NAME = "dummy"  # Branch to push the changes
+GITHUB_USERNAME = st.secrets["github"]["username"]  # Your GitHub username
+GITHUB_TOKEN = st.secrets["github"]["token"]  # Your GitHub personal access token
 
 def get_unique_image_name(base_path, base_name):
     counter = 1
@@ -24,30 +20,12 @@ def get_unique_image_name(base_path, base_name):
         counter += 1
     return unique_name
 
-def clone_repository():
-    retries = 3
-    for attempt in range(retries):
-        try:
-            print("Cloning repository...")
-            git.Repo.clone_from(
-                f"https://{GITHUB_USERNAME}:{GITHUB_TOKEN}@github.com/whiteandbox/codebase.git",
-                LOCAL_REPO_PATH,
-                config='http.postBuffer=524288000'
-            )
-            return True
-        except Exception as e:
-            print(f"Clone attempt {attempt + 1} failed: {e}")
-            if attempt < retries - 1:
-                time.sleep(5)  # Wait for 5 seconds before retrying
-            else:
-                return False
-
 def commit_and_push_image(image_path):
     try:
         # Ensure the local repo exists
         if not os.path.exists(LOCAL_REPO_PATH):
-            if not clone_repository():
-                return {"status": "error", "message": "Failed to clone repository after multiple attempts"}
+            print("Cloning repository...")
+            git.Repo.clone_from(f"https://{GITHUB_USERNAME}:{GITHUB_TOKEN}@github.com/whiteandbox/codebase.git", LOCAL_REPO_PATH)
 
         repo = git.Repo(LOCAL_REPO_PATH)
 
