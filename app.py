@@ -14,7 +14,7 @@ except KeyError as e:
 
 GITHUB_REPO = "whiteandbox/cdn"  # Your repo name
 TARGET_FOLDER = "testautomated"  # Folder to place the image in the repo
-BRANCH_NAME = "dummy"  # Branch to push the changes
+BRANCH_NAME = "main"  # Branch to push the changes
 
 def get_unique_image_name(base_name):
     current_time = datetime.now().strftime("%d%m%Y_%H%M%S")
